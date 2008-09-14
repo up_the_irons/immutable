@@ -22,12 +22,12 @@ module SelfDefense
                   end;
                 else
                   @__skip_redefine = false
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-  end
-end
+                end # @__skip_redefine
+              end # @method.to_sym
+            end # @method
+          end # def self.method_added()
+        end # module_eval
+      end # args.each
+    end # def dont_rape()
+  end # module
+end # module
