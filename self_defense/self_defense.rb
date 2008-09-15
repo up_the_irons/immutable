@@ -6,7 +6,7 @@ module SelfDefense
   module ClassMethods
     def immutable_method(*args)
       args.each do |method|
-        alias_method :"orig_#{method}", method
+        alias_method "orig_#{method}", method
 
         @method = method
         module_eval do
@@ -15,7 +15,6 @@ module SelfDefense
               if sym == @method.to_sym 
                 unless called_by_method_added
                   self.module_eval <<-"end;"
-                    @__skip_redefine = true # Prevent recursion
                     def #{@method.to_s}(*args, &block)
                       orig_#{@method.to_s}(*args, &block)
                     end
