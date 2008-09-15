@@ -14,85 +14,92 @@ module Foo
     :fast
   end
 
-  immutable_method :foo
+  def bar
+    :fast
+  end
+
+  immutable_method :foo, :bar
 end
 
 # Other Foo modules we can screw with, so specs don't step on each other
 Foo2 = Foo.clone
 Foo3 = Foo.clone
 
-describe "Module Foo.foo()" do
-  describe "after redefining" do
-    def redefine_foo
-      Foo.module_eval do
-        def foo
-          :slow
-        end
-      end
+describe "Module Foo" do
+  def test_it(mod, method)
+    @value = Object.instance_eval do
+      include mod
+      send(method)
     end
 
-    def test_it
-      @foo = Object.instance_eval do
-        include Foo
-        foo
-      end
-  
-      @foo.should == :fast
+    @value.should == :fast
+  end
+ 
+  describe "after redefining" do
+    def redefine(method)
+      Foo.module_eval <<-"end;"
+        def #{method.to_s}
+          :slow
+        end
+      end;
     end
-  
+
     it "should not let foo() be redefined" do
-      redefine_foo
-      test_it
+      redefine(:foo)
+      test_it(Foo, :foo)
     end
   
     it "should not let foo() be redefined even if we try twice" do
-      redefine_foo
-      redefine_foo
-      test_it
+      redefine(:foo)
+      redefine(:foo)
+      test_it(Foo, :foo)
+    end
+
+    it "should not let bar() be redefined" do
+      redefine(:bar)
+      test_it(Foo, :bar)
+    end
+
+    it "should not let bar() be redefined even if we try twice" do
+      redefine(:bar)
+      redefine(:bar)
+      test_it(Foo, :bar)
     end
   end
 
   describe "after undefining" do
-    def undefine_foo 
+    def undefine(method)
       Foo2.module_eval do
-        undef_method(:foo)
+        undef_method(method)
       end
-    end
-
-    def test_it
-      @foo = Object.instance_eval do
-        include Foo2
-        foo
-      end
-  
-      @foo.should == :fast
     end
 
     it "should not let foo() be undefined" do
-      undefine_foo
-      test_it
+      undefine(:foo)
+      test_it(Foo2, :foo)
+    end
+
+    it "should not let bar() be undefined" do
+      undefine(:bar)
+      test_it(Foo2, :bar)
     end
   end
 
   describe "after removing" do
-    def remove_foo 
+    def remove(method)
       Foo3.module_eval do
-        remove_method(:foo)
+        remove_method(method)
       end
-    end
-
-    def test_it
-      @foo = Object.instance_eval do
-        include Foo3
-        foo
-      end
-  
-      @foo.should == :fast
     end
 
     it "should not let foo() be removed" do
-      remove_foo
-      test_it
+      remove(:foo)
+      test_it(Foo3, :foo)
+    end
+
+    it "should not let bar() be removed" do
+      remove(:bar)
+      test_it(Foo3, :bar)
     end
   end
 end
@@ -104,77 +111,92 @@ end
 class Bar
   include SelfDefense
 
+  def foo
+    :fast
+  end
+
   def bar
     :fast
   end
 
-  immutable_method :bar
+  immutable_method :foo, :bar
 end
 
 # Other Bar modules we can screw with, so specs don't step on each other
 Bar2 = Bar.clone
 Bar3 = Bar.clone
 
-describe "Class Bar.bar()" do
+describe "Class Bar" do
+  def test_it(klass, method)
+    @value = klass.new.send(method)
+    @value.should == :fast
+  end
+ 
   describe "after redefining" do
-    def redefine_bar
-      Bar.module_eval do
-        def bar
+    def redefine(method)
+      Bar.module_eval <<-"end;"
+        def #{method.to_s}
           :slow
         end
-      end
+      end;
     end
 
-    def test_it
-      @bar = Bar.new.bar
-      @bar.should == :fast
+    it "should not let foo() be redefined" do
+      redefine(:foo)
+      test_it(Bar, :foo)
     end
- 
+  
+    it "should not let foo() be redefined even if we try twice" do
+      redefine(:foo)
+      redefine(:foo)
+      test_it(Bar, :foo)
+    end
+
     it "should not let bar() be redefined" do
-      redefine_bar
-      test_it
+      redefine(:bar)
+      test_it(Bar, :bar)
     end
   
     it "should not let bar() be redefined even if we try twice" do
-      redefine_bar
-      redefine_bar
-      test_it
+      redefine(:bar)
+      redefine(:bar)
+      test_it(Bar, :bar)
     end
   end
 
   describe "after undefining" do
-    def undefine_foo 
+    def undefine(method)
       Bar2.module_eval do
-        undef_method(:bar)
+        undef_method(method)
       end
     end
 
-    def test_it
-      @bar = Bar2.new.bar
-      @bar.should == :fast
+    it "should not let foo() be undefined" do
+      undefine(:foo)
+      test_it(Bar2, :foo)
     end
 
-    it "should not let foo() be undefined" do
-      undefine_foo
-      test_it
+    it "should not let bar() be undefined" do
+      undefine(:bar)
+      test_it(Bar2, :bar)
     end
   end
 
   describe "after removing" do
-    def remove_bar 
+    def remove(method)
       Bar3.module_eval do
-        remove_method(:bar)
+        remove_method(method)
       end
     end
 
-    def test_it
-      @bar = Bar3.new.bar
-      @bar.should == :fast
+    it "should not let foo() be removed" do
+      remove(:foo)
+      test_it(Bar3, :foo)
     end
 
     it "should not let bar() be removed" do
-      remove_bar
-      test_it
+      remove(:bar)
+      test_it(Bar3, :bar)
     end
   end
 end
