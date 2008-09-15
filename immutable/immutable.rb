@@ -1,4 +1,4 @@
-module SelfDefense
+module Immutable
   def self.included(mod)
     mod.extend(ClassMethods)
   end
@@ -42,4 +42,4 @@ module SelfDefense
       end
     end # def immutable_method()
   end # module ClassMethods
-end # module SelfDefense
+end # module Immutable

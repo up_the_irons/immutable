@@ -1,14 +1,15 @@
 require 'rubygems'
 require 'spec'
 require 'ruby-debug'
-require 'self_defense'
+
+require 'immutable'
 
 ##################
 # Module version #
 ##################
 
 module Foo
-  include SelfDefense
+  include Immutable
 
   def foo
     :fast
@@ -109,7 +110,7 @@ end
 #################
 
 class Bar
-  include SelfDefense
+  include Immutable
 
   def foo
     :fast
