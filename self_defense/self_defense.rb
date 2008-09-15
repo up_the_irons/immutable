@@ -4,7 +4,7 @@ module SelfDefense
   end
 
   module ClassMethods
-    def dont_rape(*args)
+    def immutable_method(*args)
       args.each do |method|
         alias_method :"orig_#{method}", method
 
@@ -13,19 +13,29 @@ module SelfDefense
           def self.method_added(sym)
             if @method
               if sym == @method.to_sym 
-                unless @__skip_redefine
+                unless called_by_method_added
                   self.module_eval <<-"end;"
                     @__skip_redefine = true # Prevent recursion
                     def #{@method.to_s}(*args, &block)
                       orig_#{@method.to_s}(*args, &block)
                     end
                   end;
-                else
-                  @__skip_redefine = false
-                end # @__skip_redefine
+                end # called_by_method_added
               end # @method.to_sym
             end # @method
           end # def self.method_added()
+
+          def self.method_undefined(sym)
+            method_added(sym)
+          end
+
+          def self.method_removed(sym)
+            method_added(sym)
+          end
+
+          def self.called_by_method_added
+            caller[1] =~ /in.*method_added/
+          end
         end # module_eval
       end # args.each
     end # def dont_rape()
