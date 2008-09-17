@@ -96,7 +96,6 @@ to immutable.rb and not mess with $RUBYLIB.
 If you installed ``Immutable`` from RubyGems, put::
 
   require 'rubygems'
-  gem 'up_the_irons-immutable'
   require 'immutable'
 
 at the top of your programs.
