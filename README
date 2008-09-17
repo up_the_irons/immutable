@@ -14,7 +14,7 @@ Child classes, however, can still override the method.  So this is not like
 Java's "final" method modifier.
 
 One can argue that in OOP, if you want to reimplement or extend a method, a
-child class is the only place you should be doing that anyway.
+child class is the only place where you should be doing that anyway.
 
 Alpha
 -----
