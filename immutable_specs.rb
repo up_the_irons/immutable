@@ -127,6 +127,12 @@ end
 Bar2 = Bar.clone
 Bar3 = Bar.clone
 
+class ChildOfBar < Bar
+  def foo
+    :slow
+  end
+end
+
 describe "Class Bar" do
   def test_it(klass, method)
     @value = klass.new.send(method)
@@ -198,6 +204,12 @@ describe "Class Bar" do
     it "should not let bar() be removed" do
       remove(:bar)
       test_it(Bar3, :bar)
+    end
+  end
+
+  describe "child classes" do
+    it "should still be able to override method" do
+      ChildOfBar.new.foo.should == :slow
     end
   end
 end
