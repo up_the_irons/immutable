@@ -1,5 +1,3 @@
-require 'rubygems'
-
 spec = Gem::Specification.new do |s|
   s.name     = "immutable"
   s.version  = "0.1"
