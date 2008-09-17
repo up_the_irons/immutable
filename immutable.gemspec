@@ -10,8 +10,3 @@ spec = Gem::Specification.new do |s|
   s.files    = ['lib/immutable.rb', 'spec/immutable_spec.rb', 'immutable.gemspec', 'README', 'COPYING']
   s.has_rdoc = false
 end
-
-if $0 == __FILE__
-  Gem::manage_gems
-  Gem::Builder.new(spec).build
-end
