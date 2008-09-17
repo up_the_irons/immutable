@@ -12,19 +12,21 @@ module Immutable
       @args = args
       module_eval do
         def self.method_added(sym)
-          @args.each do |method|
-            if method
-              if sym == method.to_sym 
-                unless called_by_method_added
-                  self.module_eval <<-"end;"
-                    def #{method.to_s}(*args, &block)
-                      orig_#{method.to_s}(*args, &block)
-                    end
-                  end;
-                end # called_by_method_added
-              end # method.to_sym
-            end # method
-          end # @args.each
+          if @args
+            @args.each do |method|
+              if method
+                if sym == method.to_sym 
+                  unless called_by_method_added
+                    self.module_eval <<-"end;"
+                      def #{method.to_s}(*args, &block)
+                        orig_#{method.to_s}(*args, &block)
+                      end
+                    end;
+                  end # called_by_method_added
+                end # method.to_sym
+              end # method
+            end # @args.each
+          end # @args
         end # def self.method_added()
 
         def self.method_undefined(sym)
@@ -41,5 +43,8 @@ module Immutable
         caller[3] =~ /eval.*in.*method_added/
       end
     end # def immutable_method()
+
+    alias immutable_methods immutable_method
+
   end # module ClassMethods
 end # module Immutable
