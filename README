@@ -58,7 +58,7 @@ Requirements
 Optionals
 ---------
 
-* RubyGems
+* RubyGems 1.2.0 or higher
 
 Installation
 ------------
@@ -78,7 +78,8 @@ RubyGems
 
 ::
 
-  gem install -r --source http://gems.github.com immutable
+  gem sources -a http://gems.github.com
+  sudo gem install up_the_irons-immutable
 
 
 Getting Started
@@ -87,7 +88,7 @@ Getting Started
 If you installed ``Immutable`` by cloning the git repo, put the path to the repo in
 $RUBYLIB, then put::
 
-  require 'immutable'
+  require 'lib/immutable'
 
 at the top of your programs.  Alternatively, you can just require the full path
 to immutable.rb and not mess with $RUBYLIB.
@@ -95,6 +96,7 @@ to immutable.rb and not mess with $RUBYLIB.
 If you installed ``Immutable`` from RubyGems, put::
 
   require 'rubygems'
+  gem 'up_the_irons-immutable'
   require 'immutable'
 
 at the top of your programs.
