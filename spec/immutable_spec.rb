@@ -2,7 +2,7 @@ require 'rubygems'
 require 'spec'
 require 'ruby-debug'
 
-require 'immutable'
+require File.join(File.dirname(__FILE__), '..', 'lib', 'immutable')
 
 ##################
 # Module version #
