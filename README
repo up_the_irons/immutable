@@ -1,1 +1,187 @@
+=========
 Immutable
+=========
+
+:Author: Garry Dolley
+:Date: 09-17-2008
+:Version: v0.1
+
+The ``Immutable`` module provides a method (immutable_method) that let's one
+declare method(s) as immutable.  That is, other code will not be able to
+open your class and replace your method with one of the same name.
+
+Child classes, however, can still override the method.  So this is not like
+Java's "final" method modifier.
+
+One can argue that in OOP, if you want to reimplement or extend a method, a
+child class is the only place you should be doing that anyway.
+
+Alpha
+-----
+
+This code is very new and despite a pretty comprehensive spec, I'm sure there's
+cases where someone can figure out how to defeat this.  So be it. :)
+
+Motivation
+----------
+
+My motivation for writing something that provides what some may call "evil"
+functionality of closed methods/classes came from my trials of trying to
+improve Rails loading time by reimplementing some ActiveSupport methods in C
+(Ruby extension).  I absolutely needed my C versions of certain methods to be
+present, and not clobbered by ActiveSupport.  
+
+So why didn't I just load my extension after ActiveSupport?  Because by then it
+is too late.  Rails is already loaded, along with slow running methods that get
+called over 10,000 times.  Run the profiler and see for yourself:
+
+::
+
+  ./script/performance/profiler "require 'config/environment'"
+
+Releases
+--------
+
+The latest code is in git::
+
+  * git://github.com/up_the_irons/immutable.git
+
+Requirements
+------------
+
+* None
+
+Optionals
+---------
+
+* RubyGems
+
+Installation
+------------
+
+git
+~~~
+
+::
+
+  git clone git://github.com/up_the_irons/immutable.git
+
+Add the path where the repo was cloned on your filesystem to $RUBYLIB, or just
+use the full path when you "require".  See "Getting Started" section.
+
+RubyGems
+~~~~~~~~
+
+::
+
+  gem install -r --source http://gems.github.com immutable
+
+
+Getting Started
+---------------
+
+If you installed ``Immutable`` by cloning the git repo, put the path to the repo in
+$RUBYLIB, then put::
+
+  require 'immutable'
+
+at the top of your programs.  Alternatively, you can just require the full path
+to immutable.rb and not mess with $RUBYLIB.
+
+If you installed ``Immutable`` from RubyGems, put::
+
+  require 'rubygems'
+  require 'immutable'
+
+at the top of your programs.
+
+Using
+-----
+
+There's not much to say, so let me present a fully working example:
+
+::
+
+  require 'rubygems'
+  require 'immutable'
+  
+  module Foo
+    include Immutable
+  
+    def foo
+      :foo
+    end
+  
+    def bar
+      :bar
+    end
+  
+    immutable_method :foo, :bar
+  end
+  
+Now methods foo() and bar() cannot be overridden by other code opening Foo and
+reimplementing them.  So the following:
+
+::
+
+  module Foo
+    def foo
+      :baz
+    end
+  end
+
+  include Foo
+
+  foo          # => :foo
+
+Returns :foo, not :baz.
+
+There is an alias for immutable_method() called immutable_methods() (plural).
+Use whichever style you prefer.
+  
+To Do
+-----
+
+* Add option to raise exception if code tries to modify an immutable method.
+
+Author
+------
+
+Garry C. Dolley
+
+gdolley [at] NOSPAM- ucla.edu
+
+AIM: garry97531
+
+IRC: up_the_irons in #git and #caboose on Freenode (and usually many other
+channels)
+
+Formatting
+----------
+
+This README is formatted in reStructredText [RST]_.  It has the best
+correlation between what a document looks like as plain text vs. its
+formatted output (HTML, LaTeX, etc...).  What I like best is, markup doesn't
+look like markup, even though it is.
+
+.. [RST] http://docutils.sourceforge.net/rst.html
+
+Copyright
+---------
+
+Copyright (c) 2008 Garry C. Dolley
+
+eBay4R is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later 
+version.
+
+eBay4R is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+eBay4R; if not, write to the Free Software Foundation, Inc., 51 Franklin
+Street, Fifth Floor, Boston, MA  02110-1301, USA
+
