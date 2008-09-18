@@ -14,17 +14,13 @@ module Immutable
         def self.method_added(sym)
           if @args
             @args.each do |method|
-              if method
-                if sym == method.to_sym 
-                  unless called_by_method_added
-                    self.module_eval <<-"end;"
-                      def #{method.to_s}(*args, &block)
-                        orig_#{method.to_s}(*args, &block)
-                      end
-                    end;
-                  end # called_by_method_added
-                end # method.to_sym
-              end # method
+              if method && sym == method.to_sym && !called_by_method_added
+                self.module_eval <<-"end;"
+                  def #{method.to_s}(*args, &block)
+                    orig_#{method.to_s}(*args, &block)
+                  end
+                end;
+              end 
             end # @args.each
           end # @args
         end # def self.method_added()
