@@ -37,69 +37,49 @@ describe "Module Foo" do
   end
  
   describe "after redefining" do
-    def redefine(method)
-      Foo.module_eval <<-"end;"
-        def #{method.to_s}
-          :slow
-        end
-      end;
-    end
-
     it "should not let foo() be redefined" do
-      redefine(:foo)
+      redefine(Foo, :foo)
       test_it(Foo, :foo)
     end
   
     it "should not let foo() be redefined even if we try twice" do
-      redefine(:foo)
-      redefine(:foo)
+      redefine(Foo, :foo)
+      redefine(Foo, :foo)
       test_it(Foo, :foo)
     end
 
     it "should not let bar() be redefined" do
-      redefine(:bar)
+      redefine(Foo, :bar)
       test_it(Foo, :bar)
     end
 
     it "should not let bar() be redefined even if we try twice" do
-      redefine(:bar)
-      redefine(:bar)
+      redefine(Foo, :bar)
+      redefine(Foo, :bar)
       test_it(Foo, :bar)
     end
   end
 
   describe "after undefining" do
-    def undefine(method)
-      Foo2.module_eval do
-        undef_method(method)
-      end
-    end
-
     it "should not let foo() be undefined" do
-      undefine(:foo)
+      undefine(Foo2, :foo)
       test_it(Foo2, :foo)
     end
 
     it "should not let bar() be undefined" do
-      undefine(:bar)
+      undefine(Foo2, :bar)
       test_it(Foo2, :bar)
     end
   end
 
   describe "after removing" do
-    def remove(method)
-      Foo3.module_eval do
-        remove_method(method)
-      end
-    end
-
     it "should not let foo() be removed" do
-      remove(:foo)
+      remove(Foo3, :foo)
       test_it(Foo3, :foo)
     end
 
     it "should not let bar() be removed" do
-      remove(:bar)
+      remove(Foo3, :bar)
       test_it(Foo3, :bar)
     end
   end
@@ -140,69 +120,49 @@ describe "Class Bar" do
   end
  
   describe "after redefining" do
-    def redefine(method)
-      Bar.module_eval <<-"end;"
-        def #{method.to_s}
-          :slow
-        end
-      end;
-    end
-
     it "should not let foo() be redefined" do
-      redefine(:foo)
+      redefine(Bar, :foo)
       test_it(Bar, :foo)
     end
   
     it "should not let foo() be redefined even if we try twice" do
-      redefine(:foo)
-      redefine(:foo)
+      redefine(Bar, :foo)
+      redefine(Bar, :foo)
       test_it(Bar, :foo)
     end
 
     it "should not let bar() be redefined" do
-      redefine(:bar)
+      redefine(Bar, :bar)
       test_it(Bar, :bar)
     end
   
     it "should not let bar() be redefined even if we try twice" do
-      redefine(:bar)
-      redefine(:bar)
+      redefine(Bar, :bar)
+      redefine(Bar, :bar)
       test_it(Bar, :bar)
     end
   end
 
   describe "after undefining" do
-    def undefine(method)
-      Bar2.module_eval do
-        undef_method(method)
-      end
-    end
-
     it "should not let foo() be undefined" do
-      undefine(:foo)
+      undefine(Bar2, :foo)
       test_it(Bar2, :foo)
     end
 
     it "should not let bar() be undefined" do
-      undefine(:bar)
+      undefine(Bar2, :bar)
       test_it(Bar2, :bar)
     end
   end
 
   describe "after removing" do
-    def remove(method)
-      Bar3.module_eval do
-        remove_method(method)
-      end
-    end
-
     it "should not let foo() be removed" do
-      remove(:foo)
+      remove(Bar3, :foo)
       test_it(Bar3, :foo)
     end
 
     it "should not let bar() be removed" do
-      remove(:bar)
+      remove(Bar3, :bar)
       test_it(Bar3, :bar)
     end
   end
@@ -211,5 +171,28 @@ describe "Class Bar" do
     it "should still be able to override method" do
       ChildOfBar.new.foo.should == :slow
     end
+  end
+end
+##################
+# Helper methods #
+##################
+
+def redefine(mod, method)
+  mod.module_eval <<-"end;"
+    def #{method.to_s}
+      :slow
+    end
+  end;
+end
+
+def undefine(mod, method)
+  mod.module_eval do
+    undef_method(method)
+  end
+end
+
+def remove(mod, method)
+  mod.module_eval do
+    remove_method(method)
   end
 end
