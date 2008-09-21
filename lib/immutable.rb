@@ -1,20 +1,28 @@
 module Immutable
+  class CannotOverrideMethod < StandardError; end
+
   def self.included(mod)
     mod.extend(ClassMethods)
   end
 
   module ClassMethods
     def immutable_method(*args)
+      opts = args.last.is_a?(Hash) ? args.pop : {}
+      
       args.each do |method|
         alias_method "orig_#{method}", method
       end
 
-      @args = args
+      @args = args; @opts = opts
       module_eval do
         def self.method_added(sym)
           if @args
             @args.each do |method|
               if method && sym == method.to_sym && !called_by_method_added
+                unless @opts[:silent]
+                  raise CannotOverrideMethod, "Cannot override the immutable method: #{sym}"
+                end
+
                 self.module_eval <<-"end;"
                   def #{method.to_s}(*args, &block)
                     orig_#{method.to_s}(*args, &block)

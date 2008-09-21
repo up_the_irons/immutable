@@ -135,11 +135,41 @@ reimplementing them.  So the following:
     end
   end
 
+Will raise an error:
+
+::
+
+  Cannot override the immutable method: foo (Immutable::CannotOverrideMethod)
+
+There is one option to immutable_method() called :silent.  If :silent is true,
+no exception will be raised.  One can then do:
+
+::
+
+  module Foo
+    include Immutable
+
+    def foo
+      :foo
+    end
+
+    immutable_method :foo, :silent => true
+  end
+
+  module Foo
+    def foo
+      :baz
+    end
+  end
+
   include Foo
 
   foo          # => :foo
 
-Returns :foo, not :baz.
+foo() returns :foo, not :baz.  It did not allow itself to be overriden.  Using
+:silent can bring a great deal of confusion to other developers wondering why
+their method overrides aren't working.  I would consider using :silent bad
+practice in all but very limited cases.  Use with extreme caution.
 
 There is an alias for immutable_method() called immutable_methods() (plural).
 Use whichever style you prefer.
@@ -147,7 +177,7 @@ Use whichever style you prefer.
 To Do
 -----
 
-* Add option to raise exception if code tries to modify an immutable method.
+I finished my TODOs, cool.
 
 Author
 ------
@@ -189,4 +219,3 @@ details.
 You should have received a copy of the GNU General Public License along with
 Immutable; if not, write to the Free Software Foundation, Inc., 51 Franklin
 Street, Fifth Floor, Boston, MA  02110-1301, USA
-

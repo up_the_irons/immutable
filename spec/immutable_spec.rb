@@ -19,7 +19,7 @@ module Foo
     :fast
   end
 
-  immutable_method :foo, :bar
+  immutable_method :foo, :bar, :silent => true
 end
 
 # Other Foo modules we can screw with, so specs don't step on each other
@@ -100,7 +100,7 @@ class Bar
     :fast
   end
 
-  immutable_method :foo, :bar
+  immutable_method :foo, :bar, :silent => true
 end
 
 # Other Bar modules we can screw with, so specs don't step on each other
@@ -173,6 +173,31 @@ describe "Class Bar" do
     end
   end
 end
+
+##############
+# Exceptions #
+##############
+
+module Boo
+  include Immutable
+
+  def boo
+    :fast
+  end
+
+  immutable_method :boo
+end
+
+describe "Exceptions" do
+  describe "by default" do
+    it "should raise exception upon override" do
+      lambda do 
+        redefine(Boo, :boo)
+      end.should raise_error(Immutable::CannotOverrideMethod, /Cannot override the immutable method: boo$/)
+    end
+  end
+end
+
 ##################
 # Helper methods #
 ##################
