@@ -26,6 +26,9 @@ Additionally, I've tested this code on only the following:
 
 * GNU/Linux (Ubuntu 8.04.1) with Ruby 1.8.6
 * FreeBSD 7.0 with Ruby 1.8.6
+* OpenBSD 4.3 with Ruby 1.8.6
+
+(I need someone to test it on OS X)
 
 Please see the Author section below and report any problems.
 
