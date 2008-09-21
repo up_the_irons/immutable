@@ -3,8 +3,8 @@ Immutable
 =========
 
 :Author: Garry Dolley
-:Date: 09-17-2008
-:Version: v0.1
+:Date: 09-21-2008
+:Version: v0.2
 
 The ``Immutable`` module provides a method (immutable_method) that let's one
 declare method(s) as immutable.  That is, other code will not be able to
