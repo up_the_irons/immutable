@@ -22,7 +22,10 @@ Alpha
 This code is very new and despite a pretty comprehensive spec, I'm sure there's
 cases where someone can figure out how to defeat this.  So be it. :)
 
-Additionally, I've tested this code on GNU/Linux with Ruby 1.8.6 only.
+Additionally, I've tested this code on only the following:
+
+* GNU/Linux (Ubuntu 8.04.1) with Ruby 1.8.6
+* FreeBSD 7.0 with Ruby 1.8.6
 
 Please see the Author section below and report any problems.
 
