@@ -1,6 +1,9 @@
 module Immutable
   class CannotOverrideMethod < StandardError; end
 
+  # Random ID changed at each interpreter load
+  UNIQ = "_#{object_id}"
+
   def self.included(mod)
     mod.extend(ClassMethods)
   end
@@ -10,7 +13,7 @@ module Immutable
       opts = args.last.is_a?(Hash) ? args.pop : {}
       
       args.each do |method|
-        alias_method "orig_#{method}", method
+        alias_method "#{UNIQ}_#{method}", method
       end
 
       @args = args; @opts = opts
@@ -25,7 +28,7 @@ module Immutable
 
                 self.module_eval <<-"end;"
                   def #{method.to_s}(*args, &block)
-                    orig_#{method.to_s}(*args, &block)
+                    #{UNIQ}_#{method.to_s}(*args, &block)
                   end
                 end;
               end 
