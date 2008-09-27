@@ -13,7 +13,7 @@ module Immutable
       opts = args.last.is_a?(Hash) ? args.pop : {}
       
       args.each do |method|
-        alias_method "#{UNIQ}_#{method}", method
+        alias_method "#{UNIQ}_old_#{method}", method
       end
       
       @allow_method_override = false
@@ -31,7 +31,7 @@ module Immutable
                 allow_method_override do
                   self.module_eval <<-"end;"
                     def #{method}(*args, &block)
-                      #{UNIQ}_#{method}(*args, &block)
+                      #{UNIQ}_old_#{method}(*args, &block)
                     end
                   end;
                 end
