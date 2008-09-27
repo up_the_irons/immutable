@@ -15,22 +15,26 @@ module Immutable
       args.each do |method|
         alias_method "#{UNIQ}_#{method}", method
       end
+      
+      @allow_method_override = false
 
       @args = args; @opts = opts
       module_eval do
         def self.method_added(sym)
           if @args
             @args.each do |method|
-              if method && sym == method.to_sym && !called_by_method_added
+              if method && sym == method.to_sym && !@allow_method_override
                 unless @opts[:silent]
                   raise CannotOverrideMethod, "Cannot override the immutable method: #{sym}"
                 end
-
-                self.module_eval <<-"end;"
-                  def #{method}(*args, &block)
-                    #{UNIQ}_#{method}(*args, &block)
-                  end
-                end;
+                
+                allow_method_override do
+                  self.module_eval <<-"end;"
+                    def #{method}(*args, &block)
+                      #{UNIQ}_#{method}(*args, &block)
+                    end
+                  end;
+                end
               end 
             end # @args.each
           end # @args
@@ -45,9 +49,11 @@ module Immutable
         end
       end # module_eval
 
-      def self.called_by_method_added
-        # This is a little brittle, suggestions?
-        caller[3] =~ /eval.*in.*method_added/
+      def self.allow_method_override
+        @allow_method_override = true
+        yield
+      ensure
+        @allow_method_override = false
       end
     end # def immutable_method()
 
