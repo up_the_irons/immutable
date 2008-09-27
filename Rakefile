@@ -2,5 +2,6 @@ task :default => :spec
 
 desc "run the specs"
 task :spec do
-  ruby "spec/immutable_spec.rb"
+  opts = File.read('spec/spec.opts').split("\n").join(' ') rescue ""
+  ruby "spec/immutable_spec.rb #{opts}"
 end
