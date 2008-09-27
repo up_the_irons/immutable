@@ -16,14 +16,14 @@ module Immutable
         alias_method "#{UNIQ}_old_#{method}", method
       end
       
-      @allow_method_override = false
+      instance_variable_set("@#{UNIQ}_in_method_added", false)
 
       @args = args; @opts = opts
       module_eval do
         def self.method_added(sym)
           if @args
             @args.each do |method|
-              if method && sym == method.to_sym && !@allow_method_override
+              if method && sym == method.to_sym && !in_method_added?
                 unless @opts[:silent]
                   raise CannotOverrideMethod, "Cannot override the immutable method: #{sym}"
                 end
@@ -50,10 +50,14 @@ module Immutable
       end # module_eval
 
       def self.allow_method_override
-        @allow_method_override = true
+        instance_variable_set("@#{UNIQ}_in_method_added", true)
         yield
       ensure
-        @allow_method_override = false
+        instance_variable_set("@#{UNIQ}_in_method_added", false)
+      end
+
+      def self.in_method_added?
+        instance_variable_get("@#{UNIQ}_in_method_added")
       end
     end # def immutable_method()
 
