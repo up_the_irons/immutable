@@ -27,8 +27,8 @@ module Immutable
                 end
 
                 self.module_eval <<-"end;"
-                  def #{method.to_s}(*args, &block)
-                    #{UNIQ}_#{method.to_s}(*args, &block)
+                  def #{method}(*args, &block)
+                    #{UNIQ}_#{method}(*args, &block)
                   end
                 end;
               end 
