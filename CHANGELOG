@@ -1,0 +1,16 @@
+pending v0.3
+------------
+
+* Allow independent calls to immutable_method()
+* Some immutable methods can be silent, others not.
+
+v0.2
+----
+
+* Added exceptions.  Exception is raised by default if immutable method is
+  overriden.
+
+v0.1
+----
+
+* Initial release
