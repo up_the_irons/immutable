@@ -27,15 +27,6 @@ Foo2 = Foo.clone
 Foo3 = Foo.clone
 
 describe "Module Foo" do
-  def test_it(mod, method)
-    @value = Object.instance_eval do
-      include mod
-      send(method)
-    end
-
-    @value.should == :fast
-  end
- 
   describe "after redefining" do
     it "should not let foo() be redefined" do
       redefine(Foo, :foo)
@@ -265,4 +256,13 @@ def remove(mod, method)
   mod.module_eval do
     remove_method(method)
   end
+end
+
+def test_it(mod, method, value = :fast)
+  @value = Object.instance_eval do
+    include mod
+    send(method)
+  end
+
+  @value.should == value
 end
