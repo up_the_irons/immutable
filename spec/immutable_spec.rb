@@ -176,6 +176,11 @@ module Boo
     :fast
   end
 
+  def boofoo
+    :boofoo_fast
+  end
+
+  immutable_method :boofoo, :silent => true
   immutable_method :boo
 end
 
@@ -186,6 +191,11 @@ describe "Exceptions" do
         redefine(Boo, :boo)
       end.should raise_error(Immutable::CannotOverrideMethod, /Cannot override the immutable method: boo$/)
     end
+  end
+
+  it "should not raise if :silent => true" do
+    redefine(Boo, :boofoo)
+    test_it(Boo, :boofoo, :boofoo_fast)
   end
 end
 
@@ -208,10 +218,15 @@ module Bear
     :baz_fast
   end
 
+  def boo
+    :boo_fast
+  end
+
   # Make sure we can make independent calls to immutable_method
   immutable_method :foo
   immutable_method :bar
-  immutable_method :baz
+  immutable_method :baz, :silent => true
+  immutable_method :boo
 end
 
 describe "Multiple independent calls to immutable_method()" do
@@ -228,9 +243,14 @@ describe "Multiple independent calls to immutable_method()" do
   end
 
   it "should still recognize baz() is immutable" do
+    redefine(Bear, :baz)
+    test_it(Bear, :baz, :baz_fast)
+  end
+
+  it "should still recognize boo() is immutable" do
     lambda do 
-      redefine(Bear, :baz)
-    end.should raise_error(Immutable::CannotOverrideMethod, /Cannot override the immutable method: baz$/)
+      redefine(Bear, :boo)
+    end.should raise_error(Immutable::CannotOverrideMethod, /Cannot override the immutable method: boo$/)
   end
 end
 

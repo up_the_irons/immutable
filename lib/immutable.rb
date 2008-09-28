@@ -12,6 +12,7 @@ module Immutable
     def immutable_method(*args)
       # Initialize variables
       @immutable_methods = [] if @immutable_methods.nil?
+      @silent_immutable_methods = [] if @silent_immutable_methods.nil?
       instance_variable_set("@#{UNIQ}_in_method_added", false)
 
       opts = args.last.is_a?(Hash) ? args.pop : {}
@@ -22,6 +23,7 @@ module Immutable
       
       # Build list of immutable methods
       @immutable_methods += args
+      @silent_immutable_methods += args if opts[:silent]
 
       @opts = opts
       module_eval do
@@ -29,7 +31,7 @@ module Immutable
           if @immutable_methods
             @immutable_methods.each do |method|
               if method && sym == method.to_sym && !in_method_added?
-                unless @opts[:silent]
+                unless @silent_immutable_methods.include?(method)
                   raise CannotOverrideMethod, "Cannot override the immutable method: #{sym}"
                 end
                 
