@@ -10,19 +10,24 @@ module Immutable
 
   module ClassMethods
     def immutable_method(*args)
+      # Initialize variables
+      @immutable_methods = [] if @immutable_methods.nil?
+      instance_variable_set("@#{UNIQ}_in_method_added", false)
+
       opts = args.last.is_a?(Hash) ? args.pop : {}
       
       args.each do |method|
         alias_method "#{UNIQ}_old_#{method}", method
       end
       
-      instance_variable_set("@#{UNIQ}_in_method_added", false)
+      # Build list of immutable methods
+      @immutable_methods += args
 
-      @args = args; @opts = opts
+      @opts = opts
       module_eval do
         def self.method_added(sym)
-          if @args
-            @args.each do |method|
+          if @immutable_methods
+            @immutable_methods.each do |method|
               if method && sym == method.to_sym && !in_method_added?
                 unless @opts[:silent]
                   raise CannotOverrideMethod, "Cannot override the immutable method: #{sym}"
@@ -37,7 +42,7 @@ module Immutable
                 end
               end 
             end # @args.each
-          end # @args
+          end # @immutable_methods
         end # def self.method_added()
 
         def self.method_undefined(sym)

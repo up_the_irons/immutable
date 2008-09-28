@@ -198,6 +198,51 @@ describe "Exceptions" do
   end
 end
 
+#########
+# Other #
+#########
+
+module Bear
+  include Immutable
+
+  def foo
+    :foo_fast
+  end
+
+  def bar
+    :bar_fast
+  end
+
+  def baz
+    :baz_fast
+  end
+
+  # Make sure we can make independent calls to immutable_method
+  immutable_method :foo
+  immutable_method :bar
+  immutable_method :baz
+end
+
+describe "Multiple independent calls to immutable_method()" do
+  it "should still recognize foo() is immutable" do
+    lambda do
+      redefine(Bear, :foo)
+    end.should raise_error(Immutable::CannotOverrideMethod, /Cannot override the immutable method: foo$/)
+  end
+
+  it "should still recognize bar() is immutable" do
+    lambda do
+      redefine(Bear, :bar)
+    end.should raise_error(Immutable::CannotOverrideMethod, /Cannot override the immutable method: bar$/)
+  end
+
+  it "should still recognize baz() is immutable" do
+    lambda do 
+      redefine(Bear, :baz)
+    end.should raise_error(Immutable::CannotOverrideMethod, /Cannot override the immutable method: baz$/)
+  end
+end
+
 ##################
 # Helper methods #
 ##################
