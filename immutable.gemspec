@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name     = "immutable"
-  s.version  = "0.2"
+  s.version  = "0.3"
   s.author   = "Garry Dolley"
   s.email    = "gdolley@ucla.edu"
   s.homepage = "http://github.com/up_the_irons/immutable/tree/master"
