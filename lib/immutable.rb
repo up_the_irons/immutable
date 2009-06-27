@@ -2,7 +2,7 @@ module Immutable
   class CannotOverrideMethod < StandardError; end
 
   # Random ID changed at each interpreter load
-  UNIQ = "_#{object_id}"
+  UNIQ = "_#{object_id.abs}"
 
   def self.included(mod)
     mod.extend(ClassMethods)
