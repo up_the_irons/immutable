@@ -1,8 +1,13 @@
-pending v0.3
+pending v0.4
 ------------
 
 * Allow independent calls to immutable_method()
 * Some immutable methods can be silent, others not.
+
+v0.3
+----
+
+* Fixed bug in UNIQ constant. Tests are working fine now.
 
 v0.2
 ----
