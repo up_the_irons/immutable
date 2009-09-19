@@ -182,6 +182,9 @@ Use whichever style you prefer.
 To Do
 -----
 
+Make method_added immutable, as well as immutable_method.  Write tests to try
+to "defeat" an immutable method, see if we can prevent it.
+
 I finished my TODOs, cool.
 
 Author
